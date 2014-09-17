@@ -1,6 +1,7 @@
 $as_vagrant   = 'sudo -u vagrant -H bash -l -c'
 $home         = '/home/vagrant'
 $app_path     = "/home/vagrant/${appname}"
+$gems_array   = split($gems, ',')
 
 Exec {
   path => ['/usr/sbin', '/usr/bin', '/sbin', '/bin']
@@ -108,32 +109,21 @@ exec { 'install_ruby':
   require => Exec['install_rvm']
 }
 
-exec { "${as_vagrant} 'gem install bundler --no-rdoc --no-ri'":
+exec { 'install_bundler':
+  command => "${as_vagrant} 'gem install bundler --no-rdoc --no-ri'",
   creates => "${home}/.rvm/bin/bundle",
   require => Exec['install_ruby']
 }
 
-exec { 'bundle_install':
-  command => "${as_vagrant} 'bundle install'",
-  cwd     => $app_path,
-  require => Exec['install_rvm']
-}
-
 # --- Install Ruby Gems ---------------------------------------------------------------------
-
-define installGems {
-  package { $name:
-      ensure   => 'installed',
-      provider => 'gem',
-  }
+package { $gems_array:
+    ensure   => 'installed',
+    provider => 'gem',
+    require => Exec['install_bundler']
 }
-installGems { $gems: }
 
 # --- Bash profile customization ---------------------------------------------------------------------
 
 exec { 'login_to_project': 
-  command => "${as_vagrant} 'echo \"cd ${app_path}\" >> ${home}/.profile'",
-  require => Exec['bundle_install'],
-  once    => true
+  command => "${as_vagrant} 'echo \"cd ${app_path}\" >> ${home}/.profile'"
 }
-
