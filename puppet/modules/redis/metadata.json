@@ -1,0 +1,37 @@
+{
+  "name": "fsalum-redis",
+  "version": "1.0.0",
+  "source": "git://github.com/fsalum/puppet-redis.git",
+  "author": "Felipe Salum",
+  "license": "Apache License, Version 2.0",
+  "summary": "Puppet module for Redis Server",
+  "description": "Module to install and configure a Redis server",
+  "project_page": "https://github.com/fsalum/puppet-redis",
+  "dependencies": [
+    {
+      "name": "thias/sysctl",
+      "version_requirement": ">= 0.3.0"
+    }
+  ],
+  "types": [
+
+  ],
+  "checksums": {
+    "CHANGELOG": "09eec7df573108283f5cf5d542462048",
+    "Gemfile": "7c7684e8c8d675f1061e40a3e1d9236d",
+    "Gemfile.lock": "9e2113cbe27b6b19ce0a24cbab0148d3",
+    "LICENSE": "1b27ef6006a261242c6c077d3ac2f13f",
+    "Modulefile": "24fe7b1a57a5bc9f7a4d33d8097b8963",
+    "README.md": "1d1fc87ab3eaeef4df601c8de05fa8ce",
+    "Rakefile": "25325f7a133aff637f3bea5e272bce74",
+    "Vagrantfile": "cc4f02cf6c571b166d1ea6c961aa7d06",
+    "lib/facter/redis_version.rb": "edd48d87c327452aa895b83b528d0696",
+    "manifests/init.pp": "b9296ebda81aa6a72717fd334ae54a28",
+    "manifests/params.pp": "09673263bc33b10bd38e28f6c6ba5a06",
+    "spec/spec_helper.rb": "a55d1e6483344f8ec6963fcb2c220372",
+    "templates/redis.conf.erb": "a7f72caa28bd99d7d3761ca658ae6748",
+    "templates/redis.logrotate.erb": "c1d0b11eeb8252e6be3f3e0cfe269414",
+    "tests/Puppetfile": "5580d0db50059fdc3d5ce7fef4198251",
+    "tests/init.pp": "4f1bf99f7776bf4ae3bc304153173142"
+  }
+}
