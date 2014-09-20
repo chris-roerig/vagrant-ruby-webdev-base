@@ -1,140 +1,82 @@
 $as_vagrant   = 'sudo -u vagrant -H bash -l -c'
 $home         = '/home/vagrant'
-$app_path     = "/home/vagrant/${appname}"
+$app_path     = "/home/vagrant/${app_name}"
 $gems_array   = split($gems, ',')
 
 Exec {
   path => ['/usr/sbin', '/usr/bin', '/sbin', '/bin']
 }
 
-# --- Preinstall Stage ---------------------------------------------------------
+# --- Apt Packages -----------------------------------------------------------------
 
-stage { 'preinstall':
-  before => Stage['main']
+exec { 'apt-update':
+    command => '/usr/bin/apt-get update'
 }
 
-class apt_get_update {
-  exec { 'apt-get -y update':
-    unless => "test -e ${home}/.rvm"
-  }
+$apt_packages = [
+  'curl',
+  'yasm',
+  'build-essential',
+  'git-core',
+  'vim',
+  'nfs-common',
+  'portmap',
+  'imagemagick',
+  'sqlite3',
+  'libsqlite3-dev',
+  # Nokogiri dependencies.
+  'libxslt-dev',
+  'libxml2-dev',
+  # ExecJS runtime.
+  'nodejs'
+]
+
+package { $apt_packages:
+  ensure => 'installed',
+  require => Exec['apt-update']
 }
-class { 'apt_get_update':
-  stage => preinstall
+
+# --- Ruby via rbenv ---------------------------------------------------------------------
+
+class { 'rbenv': }
+
+rbenv::build { $ruby_version: global => true }
+
+# required 
+rbenv::plugin { [ 'sstephenson/rbenv-vars', 'sstephenson/ruby-build' ]: }
+
+# install gems
+rbenv::gem { $gems_array: 
+  ruby_version => $ruby_version
 }
 
 # --- Nginx (For reverse proxy) -----------------------------------------------
 
 class { 'nginx': }
 
+# make sure the proxy port you are using is 
+# in this list.
 nginx::resource::upstream { 'puppet_rack_app':
   members => [
-    'localhost:3000',
-    'localhost:4567',
-    'localhost:9393',
+    'localhost:3000', # WEBrick (Rails)
+    'localhost:4567', # Sinatra
+    'localhost:8080', # Thin
+    'localhost:9393', # Shotgun
   ],
 }
 
 nginx::resource::vhost { $hostname:
-  proxy => 'http://127.0.0.1:9393',
-}
-
-# --- Packages -----------------------------------------------------------------
-
-package { 'curl':
-  ensure => installed
-}
-
-package { "yasm":
-  ensure => installed,
-}
-
-package { 'build-essential':
-  ensure => installed
-}
-
-package { 'git-core':
-  ensure => installed
-}
-
-package { 'vim':
-  ensure => installed
-}
-
-package { 'nfs-common':
-  ensure => installed
-}
-
-package { 'portmap':
-  ensure => installed
-}
-
-package { 'imagemagick':
-  ensure => installed
-}
-
-# Nokogiri dependencies.
-package { ['libxml2', 'libxml2-dev', 'libxslt1-dev']:
-  ensure => installed
-}
-
-# ExecJS runtime.
-package { 'nodejs':
-  ensure => installed
+  proxy => "http://127.0.0.1:${proxy_port}",
 }
 
 # --- Redis ---------------------------------------------------------------------
+
 class { 'redis': }
 
 # --- MongoDB ------------------------------------------------------------------
+
 class {'::mongodb::server':
   port => 27017
-}
-
-# --- Ruby ---------------------------------------------------------------------
-
-
-# https://forge.puppetlabs.com/maestrodev/rvm 
-include rvm
-rvm::system_user { vagrant: ; }
-rvm_system_ruby {
-  'ruby-2.0':
-    #build_opts  => ['--binary'];
-    ensure      => 'present',
-    default_use => true;
-}
-
-rvm_gem {
-
-}
-
-exec { 'install_rvm':
-  command => "${as_vagrant} 'curl -L https://get.rvm.io | bash -s stable'",
-  creates => "${home}/.rvm/bin/rvm",
-  require => Package['curl']
-}
-
-exec { 'install_ruby':
-  # We run the rvm executable directly because the shell function assumes an
-  # interactive environment, in particular to display messages or ask questions.
-  # The rvm executable is more suitable for automated installs.
-  #
-  # Thanks to @mpapis for this tip.
-  command => "${as_vagrant} '${home}/.rvm/bin/rvm install 2.0 --fuzzy --binary --autolibs=enabled && rvm --fuzzy alias create default 2.0'",
-  creates => "${home}/.rvm/bin/ruby",
-  require => Exec['install_rvm']
-}
-
-exec { 'install_bundler':
-  command => "${as_vagrant} 'gem install bundler --no-rdoc --no-ri'",
-  creates => "${home}/.rvm/bin/bundle",
-  require => Exec['install_ruby']
-}
-
-# --- Install Ruby Gems ---------------------------------------------------------------------
-package { $gems_array:
-    ensure   => 'installed',
-    provider => 'gem',
-    require => Exec['install_bundler']
 }
 
 # --- Bash profile customization ---------------------------------------------------------------------
