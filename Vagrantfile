@@ -4,7 +4,7 @@ Vagrant.configure('2') do |config|
   # These settings also be used in the Puppet manifest.
   settings = {
     box_name:       'My App Box Name',
-    app_name:       'myapp',
+    app_dir:        '',
     hostname:       'dev.myappdomain.com',
     box_ip:         '192.168.12.120',
     proxy_port:     3000, 
@@ -30,10 +30,10 @@ Vagrant.configure('2') do |config|
   config.vm.network "private_network", ip: settings[:box_ip]
 
   # use nfs for regular dev
-  config.vm.synced_folder "./", "/home/vagrant/#{settings[:app_name]}", nfs: true
+  config.vm.synced_folder "./", "/home/vagrant/#{settings[:app_dir]}", nfs: true
   
   # Use rsync when coffeescript-ing
-  #config.vm.synced_folder "./", "/home/vagrant/#{settings[:app_name]}", type: "rsync"
+  #config.vm.synced_folder "./", "/home/vagrant/#{settings[:app_dir]}", type: "rsync"
 
   config.vm.provision :puppet do |puppet|
     puppet.manifests_path = 'puppet/manifests'

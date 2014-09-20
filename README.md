@@ -25,7 +25,7 @@ sure your gem list is comma delimited **with no spaces**.
 ```ruby
   settings = {
     box_name:       'My App Box Name',
-    app_name:       'myapp',
+    app_dir:        'myapp',
     hostname:       'dev.myappdomain.com',
     box_ip:         '192.168.12.120',
     proxy_port:     3000, 
@@ -45,13 +45,13 @@ Once your settings have been updated you can build the box.
     
     The Virtual Box machine name.
 
-* **app_name**
+* **app_dir**
     
-    The folder Vagrant should keep synced. Keep in mind this is relative to the Vagrantfile so leaving it blank will resolve to the path of the project:
+    The folder Vagrant should keep synced. Keep in mind this is relative to the Vagrantfile so leaving it blank will resolve to the root path of the Vagrant project:
     
-    `app_name: ''    # the same as /path/to/my/project`
+    `app_dir: ''    # the same as /path/to/my/project`
     
-    `app_name: 'foo' # the same as /path/to/my/project/foo`
+    `app_dir: 'foo' # the same as /path/to/my/project/foo`
     
 * **hostname**
 

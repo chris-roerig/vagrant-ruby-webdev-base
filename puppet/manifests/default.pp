@@ -1,6 +1,6 @@
 $as_vagrant   = 'sudo -u vagrant -H bash -l -c'
 $home         = '/home/vagrant'
-$app_path     = "/home/vagrant/${app_name}"
+$app_path     = "/home/vagrant/${app_dir}"
 $gems_array   = split($gems, ',')
 
 Exec {
