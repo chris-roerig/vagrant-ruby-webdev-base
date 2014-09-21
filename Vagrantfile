@@ -30,10 +30,10 @@ Vagrant.configure('2') do |config|
   config.vm.network "private_network", ip: settings[:box_ip]
 
   # use nfs for regular dev
-  config.vm.synced_folder "./#{settings[:app_dir]}", "/home/vagrant/", nfs: true
+  config.vm.synced_folder "./#{settings[:app_dir]}", "/vagrant/", nfs: true
   
   # Use rsync when coffeescript-ing
-  #config.vm.synced_folder "./#{settings[:app_dir]}", "/home/vagrant/", type: "rsync"
+  #config.vm.synced_folder "./#{settings[:app_dir]}", "/vagrant/", type: "rsync"
 
   config.vm.provision :puppet do |puppet|
     puppet.manifests_path = 'puppet/manifests'
