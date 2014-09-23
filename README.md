@@ -5,7 +5,7 @@ An easy way to setup a Ruby web development Vagrant box using Puppet.
 
 ###Whats in the box?
 
-* Server OS: Ubuntu Precise 64.
+* Server OS: Ubuntu Trusty (14.04 LTS) 64 bit.
 * Web Server: Nginx ready to reverse proxy all your favorite Ruby web servers.
 * [rbenv](https://github.com/sstephenson/rbenv) with Ruby version 2.0.0
 * Sqlite3

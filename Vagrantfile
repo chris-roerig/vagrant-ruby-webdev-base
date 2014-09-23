@@ -16,7 +16,7 @@ Vagrant.configure('2') do |config|
 
   config.vbguest.auto_update = true
 
-  config.vm.box      = 'precise64'
+  config.vm.box      = 'ubuntu/trusty64'
   config.vm.hostname = settings[:hostname]
 
   config.vm.network :forwarded_port, guest: 80, host: 9393, auto_correct: true
