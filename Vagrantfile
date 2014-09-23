@@ -12,6 +12,8 @@ Vagrant.configure('2') do |config|
     gems:           'rails,rspec,rake,pry'
   }
 
+  ##########################################################
+
   config.vbguest.auto_update = true
 
   config.vm.box      = 'precise64'
@@ -24,9 +26,30 @@ Vagrant.configure('2') do |config|
     vb.name = settings[:box_name]
   end
 
-  # Install the vagrant plugin 'vagrant-hostsupdater' to have 
-  # Vagrant automatically manage your hosts file.
-  # vagrant plugin install hostupdater
+  # Only check for Vagrant plugins during the "up" action
+  if ARGV[0] == 'up'
+    # check for Vagrant plugins
+    unless Vagrant.has_plugin?('vagrant-hostsupdater')
+      hostsupdater_missing_msg = <<-DESC
+      =-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+      vagrant-hostsupdater is not installed.
+      The hosts updater plugin will allow Vagrant to automatically
+      manage your hosts file. I highly recommend it.
+
+      Do you want me to install it now? (y|n)
+      DESC
+
+      print hostsupdater_missing_msg.gsub(/^ {4}/, '')
+
+      if STDIN.gets.chomp.downcase == 'y'
+        `vagrant plugin install vagrant-hostsupdater`
+      else
+        puts "OK, don't forget to add #{settings[:box_ip]} #{settings[:hostname]} to your hosts file."
+      end
+    end
+  end
+
   config.vm.network "private_network", ip: settings[:box_ip]
 
   # use nfs for regular dev
