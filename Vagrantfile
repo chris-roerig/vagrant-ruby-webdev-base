@@ -16,7 +16,7 @@ Vagrant.configure('2') do |config|
 
   config.vbguest.auto_update = true
 
-  config.vm.box      = 'ubuntu/trusty64'
+  config.vm.box      = 'precise64'
   config.vm.hostname = settings[:hostname]
 
   config.vm.network :forwarded_port, guest: 80, host: 9393, auto_correct: true
@@ -61,6 +61,6 @@ Vagrant.configure('2') do |config|
   config.vm.provision :puppet do |puppet|
     puppet.manifests_path = 'puppet/manifests'
     puppet.module_path    = 'puppet/modules'
-    puppet.facter = settings
+    puppet.facter         = settings
   end
 end
