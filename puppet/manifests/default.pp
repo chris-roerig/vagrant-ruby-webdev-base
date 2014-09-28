@@ -82,5 +82,5 @@ class {'::mongodb::server':
 # --- Bash profile customization ---------------------------------------------------------------------
 
 exec { 'login_to_project': 
-  command => "${as_vagrant} 'echo \"cd ${app_path}\" >> ${home}/.profile'"
+  command => "${as_vagrant} 'echo \"cd /vagrant\" >> ${home}/.profile'"
 }
