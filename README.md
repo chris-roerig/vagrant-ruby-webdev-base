@@ -1,3 +1,7 @@
+NOTICE: This repo is outdated and has been archived
+======================================
+
+
 Vagrant - Ruby Web Dev Base
 ===========
 
